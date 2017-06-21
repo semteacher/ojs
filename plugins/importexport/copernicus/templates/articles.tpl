@@ -1,8 +1,9 @@
 {**
- * @file plugins/importexport/doaj/templates/articles.tpl
+ * @file plugins/importexport/copernicus/templates/articles.tpl
  *
  * Copyright (c) 2013-2017 Simon Fraser University
  * Copyright (c) 2003-2016 John Willinsky
+ * Copyright (c) 2017 Andriy Semenets 
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * Select articles for export.
@@ -47,7 +48,7 @@
 			{iterate from=articles item=articleData}
 				{assign var=article value=$articleData.article}
 				{assign var=issue value=$articleData.issue}
-				{assign var=doajRegistered value=$article->getData('doaj::registered')}
+				{assign var=doajRegistered value=$article->getData('copernicus::registered')}
 				<tr valign="top">
 					<td><input type="checkbox" name="articleId[]" value="{$article->getId()}"/></td>
 					<td><a href="{url page="issue" op="view" path=$issue->getId()}" class="action">{$issue->getIssueIdentification()|strip_tags}</a></td>
