@@ -1,21 +1,22 @@
 <?php
 
 /**
- * @file plugins/importexport/doaj/DOAJExportDom.inc.php
+ * @file plugins/importexport/copernicus/DOAJExportDom.inc.php
  *
  * Copyright (c) 2013-2017 Simon Fraser University
  * Copyright (c) 2003-2016 John Willinsky
+ * Copyright (c) 2017 Andriy Semenets
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
- * @class DOAJExportDom
- * @ingroup plugins_importexport_DOAJ
+ * @class CopernicusExportDom
+ * @ingroup plugins_importexport_copernicus
  *
- * @brief DOAJ import/export plugin DOM functions for export
+ * @brief Copernicus import/export plugin DOM functions for export
  */
 
 import('lib.pkp.classes.xml.XMLCustomWriter');
 
-class DOAJExportDom {
+class CopernicusExportDom {
 	/**
 	 * Generate the export DOM tree for a given journal.
 	 * @param $doc object DOM object
@@ -34,8 +35,8 @@ class DOAJExportDom {
 		
 		// retrieve selected issues
 		$selectedIssues = array();
-		if (isset($selectedObjects[DOAJ_EXPORT_ISSUES])) {
-			$selectedIssues = $selectedObjects[DOAJ_EXPORT_ISSUES];
+		if (isset($selectedObjects[COPERNICUS_EXPORT_ISSUES])) {
+			$selectedIssues = $selectedObjects[COPERNICUS_EXPORT_ISSUES];
 			
 			// make sure the selected issues belong to the current journal
 			foreach($selectedIssues as $key => $selectedIssueId) {
@@ -46,8 +47,8 @@ class DOAJExportDom {
 
 		// retrieve selected articles
 		$selectedArticles = array();
-		if (isset($selectedObjects[DOAJ_EXPORT_ARTICLES])) {
-			$selectedArticles = $selectedObjects[DOAJ_EXPORT_ARTICLES];
+		if (isset($selectedObjects[COPERNICUS_EXPORT_ARTICLES])) {
+			$selectedArticles = $selectedObjects[COPERNICUS_EXPORT_ARTICLES];
 		
 			// make sure the selected articles belong to the current journal
 			foreach($selectedArticles as $key => $selectedArticleId) {
@@ -72,7 +73,7 @@ class DOAJExportDom {
 
 
 			$section = $sectionDao->getSection($pubArticle->getSectionId());
-			$articleNode = DOAJExportDom::generateArticleDom($doc, $journal, $issue, $section, $pubArticle);
+			$articleNode = CopernicusExportDom::generateArticleDom($doc, $journal, $issue, $section, $pubArticle);
 
 			XMLCustomWriter::appendChild($records, $articleNode);
 
@@ -94,7 +95,7 @@ class DOAJExportDom {
 		$root = XMLCustomWriter::createElement($doc, 'record');
 
 		/* --- Article Language --- */
-		XMLCustomWriter::createChildWithText($doc, $root, 'language', DOAJExportDom::mapLang($article->getLanguage()), false);
+		XMLCustomWriter::createChildWithText($doc, $root, 'language', CopernicusExportDom::mapLang($article->getLanguage()), false);
 
 		/* --- Publisher name (i.e. institution name) --- */
 		XMLCustomWriter::createChildWithText($doc, $root, 'publisher', $journal->getSetting('publisherInstitution'), false);
@@ -108,10 +109,10 @@ class DOAJExportDom {
 
 		/* --- Article's publication date, volume, issue, DOI --- */
 		if ($article->getDatePublished()) {
-			XMLCustomWriter::createChildWithText($doc, $root, 'publicationDate', DOAJExportDom::formatDate($article->getDatePublished()), false);			
+			XMLCustomWriter::createChildWithText($doc, $root, 'publicationDate', CopernicusExportDom::formatDate($article->getDatePublished()), false);			
 		}
 		else {
-			XMLCustomWriter::createChildWithText($doc, $root, 'publicationDate', DOAJExportDom::formatDate($issue->getDatePublished()), false);
+			XMLCustomWriter::createChildWithText($doc, $root, 'publicationDate', CopernicusExportDom::formatDate($issue->getDatePublished()), false);
 		}
 
 		XMLCustomWriter::createChildWithText($doc, $root, 'volume',  $issue->getVolume(), false);
@@ -146,17 +147,17 @@ class DOAJExportDom {
 			if (empty($title)) continue;
 
 			$titleNode = XMLCustomWriter::createChildWithText($doc, $root, 'title', $title);
-			if (strlen($locale) == 5) XMLCustomWriter::setAttribute($titleNode, 'language', DOAJExportDom::mapLang(String::substr($locale, 0, 2)));
+			if (strlen($locale) == 5) XMLCustomWriter::setAttribute($titleNode, 'language', CopernicusExportDom::mapLang(String::substr($locale, 0, 2)));
 		}
 
 		/* --- Authors and affiliations --- */
 		$authors = XMLCustomWriter::createElement($doc, 'authors');
 		XMLCustomWriter::appendChild($root, $authors);
 
-		$affilList = DOAJExportDom::generateAffiliationsList($article->getAuthors(), $article);
+		$affilList = CopernicusExportDom::generateAffiliationsList($article->getAuthors(), $article);
 
 		foreach ($article->getAuthors() as $author) {
-			$authorNode = DOAJExportDom::generateAuthorDom($doc, $root, $issue, $article, $author, $affilList);
+			$authorNode = CopernicusExportDom::generateAuthorDom($doc, $root, $issue, $article, $author, $affilList);
 			XMLCustomWriter::appendChild($authors, $authorNode);
 			unset($authorNode);
 		}
@@ -177,7 +178,7 @@ class DOAJExportDom {
 			if (empty($abstract)) continue;
 
 			$abstractNode = XMLCustomWriter::createChildWithText($doc, $root, 'abstract', String::html2text($abstract));
-			if (strlen($locale) == 5) XMLCustomWriter::setAttribute($abstractNode, 'language', DOAJExportDom::mapLang(String::substr($locale, 0, 2)));
+			if (strlen($locale) == 5) XMLCustomWriter::setAttribute($abstractNode, 'language', CopernicusExportDom::mapLang(String::substr($locale, 0, 2)));
 		}
 
 		/* --- FullText URL --- */
