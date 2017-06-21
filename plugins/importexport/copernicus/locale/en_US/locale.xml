@@ -2,27 +2,28 @@
 <!DOCTYPE locale SYSTEM "../../../../../lib/pkp/dtd/locale.dtd">
 
 <!--
-  * plugins/importexport/doaj/locale/en_US/locale.xml
+  * plugins/importexport/copernicus/locale/en_US/locale.xml
   *
   * Copyright (c) 2013-2017 Simon Fraser University
   * Copyright (c) 2003-2016 John Willinsky
+  * Copyright (c) 2017 Andriy Semenets
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
   * Localization strings
   -->
 
 <locale name="en_US" full_name="U.S. English">
-	<message key="plugins.importexport.doaj.displayName">DOAJ Export Plugin</message>
-	<message key="plugins.importexport.doaj.description">Export Journal for DOAJ and supply journal information for inclusion</message>
+	<message key="plugins.importexport.copernicus.displayName">Copernicus Export Plugin</message>
+	<message key="plugins.importexport.copernicus.description">Export Journal for Copernicus and supply journal information for inclusion</message>
 
 	
-	<message key="plugins.importexport.doaj.markRegistered.success">The selected objects were marked as registered!</message>
-	<message key="plugins.importexport.doaj.export">Export Journal Data to DOAJ</message>
-	<message key="plugins.importexport.doaj.export.issue">Export issues</message>
-	<message key="plugins.importexport.doaj.export.issueInfo">Export selected issues in XML</message>
-	<message key="plugins.importexport.doaj.export.article">Export articles</message>
-	<message key="plugins.importexport.doaj.export.articleInfo">Export selected articles in XML</message>
-	<message key="plugins.importexport.doaj.export.contact">Contact DOAJ for inclusion</message>
-	<message key="plugins.importexport.doaj.export.contactInfo">For your journal's consideration in the DOAJ, please submit this partially autofilled form to the DOAJ, and fill out incomplete information as best you can.</message>
+	<message key="plugins.importexport.copernicus.markRegistered.success">The selected objects were marked as registered!</message>
+	<message key="plugins.importexport.copernicus.export">Export Journal Data to Copernicus</message>
+	<message key="plugins.importexport.copernicus.export.issue">Export issues</message>
+	<message key="plugins.importexport.copernicus.export.issueInfo">Export selected issues in XML</message>
+	<message key="plugins.importexport.copernicus.export.article">Export articles</message>
+	<message key="plugins.importexport.copernicus.export.articleInfo">Export selected articles in XML</message>
+	<message key="plugins.importexport.copernicus.export.contact">Contact Copernicus for inclusion</message>
+	<message key="plugins.importexport.copernicus.export.contactInfo">For your journal's consideration in the Copernicus, please submit this partially autofilled form to the Copernicus, and fill out incomplete information as best you can.</message>
 
 </locale>
