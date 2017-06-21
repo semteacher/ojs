@@ -1,0 +1,868 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+    <xs:simpleType name="roleType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Główny Autor"/>
+            <xs:enumeration value="Autor (w tym Współautor)"/>
+            <xs:enumeration value="Projekt Badań"/>
+            <xs:enumeration value="Wykonanie Badań"/>
+            <xs:enumeration value="Analiza Statystyczna"/>
+            <xs:enumeration value="Interpretacja Danych"/>
+            <xs:enumeration value="Przygotowanie Manuskryptu"/>
+            <xs:enumeration value="Przegląd Piśmiennictwa"/>
+            <xs:enumeration value="Finansowanie Badań"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="articleType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="ORIGINAL_ARTICLE"/>
+            <xs:enumeration value="REVIEW_ARTICLE"/>
+            <xs:enumeration value="SHORT_COMMUNICATION"/>
+            <xs:enumeration value="COMMENTARY_ON_THE_LAW"/>
+            <xs:enumeration value="SCIENTIFIC_REVIEW"/>
+            <xs:enumeration value="GUIDELINES"/>
+            <xs:enumeration value="POPULAR_SCIENCE_ARTICLE"/>
+            <xs:enumeration value="OTHERS_NONCITABLE"/>
+            <xs:enumeration value="OTHERS_CITABLE"/>
+            <xs:enumeration value="CASE_STUDY"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="areaScienceType">
+        <xs:restriction base="xs:long">
+            <xs:enumeration value="1">
+                <xs:annotation>
+                    <xs:documentation>obszar nauk humanistycznych</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="2">
+                <xs:annotation>
+                    <xs:documentation>obszar nauk społecznych</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="3">
+                <xs:annotation>
+                    <xs:documentation>obszar nauk ścisłych</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="4">
+                <xs:annotation>
+                    <xs:documentation>obszar nauk przyrodniczych</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="5">
+                <xs:annotation>
+                    <xs:documentation>obszar nauk technicznych</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="6">
+                <xs:annotation>
+                    <xs:documentation>obszar nauk rolniczych, leśnych i weterynaryjnych
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="7">
+                <xs:annotation>
+                    <xs:documentation>obszar nauk medycznych i nauk o zdrowiu oraz nauk o kulturze
+                        fizycznej
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="8">
+                <xs:annotation>
+                    <xs:documentation>obszar sztuki</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="fieldScienceType">
+        <xs:restriction base="xs:long">
+            <xs:enumeration value="1">
+                <xs:annotation>
+                    <xs:documentation>dziedzina nauk humanistycznych</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="2">
+                <xs:annotation>
+                    <xs:documentation>dziedzina nauk teologicznych</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="3">
+                <xs:annotation>
+                    <xs:documentation>dziedzina nauk społecznych</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="4">
+                <xs:annotation>
+                    <xs:documentation>dziedzina nauk ekonomicznych</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="5">
+                <xs:annotation>
+                    <xs:documentation>dziedzina nauk prawnych</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="6">
+                <xs:annotation>
+                    <xs:documentation>dziedzina nauk matematycznych</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="7">
+                <xs:annotation>
+                    <xs:documentation>dziedzina nauk fizycznych</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="8">
+                <xs:annotation>
+                    <xs:documentation>dziedzina nauk chemicznych</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="9">
+                <xs:annotation>
+                    <xs:documentation>dziedzina nauk biologicznych</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="10">
+                <xs:annotation>
+                    <xs:documentation>dziedzina nauk o Ziemi</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="11">
+                <xs:annotation>
+                    <xs:documentation>dziedzina nauk technicznych</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="12">
+                <xs:annotation>
+                    <xs:documentation>dziedzina nauk rolniczych</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="13">
+                <xs:annotation>
+                    <xs:documentation>dziedzina nauk leśnych</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="14">
+                <xs:annotation>
+                    <xs:documentation>dziedzina nauk weterynaryjnych</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="15">
+                <xs:annotation>
+                    <xs:documentation>dziedzina nauk medycznych</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="16">
+                <xs:annotation>
+                    <xs:documentation>dziedzina nauk farmaceutycznych</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="17">
+                <xs:annotation>
+                    <xs:documentation>dziedzina nauk o zdrowiu</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="18">
+                <xs:annotation>
+                    <xs:documentation>dziedzina nauk o kulturze fizycznej</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="19">
+                <xs:annotation>
+                    <xs:documentation>dziedzina sztuk filmowych</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="20">
+                <xs:annotation>
+                    <xs:documentation>dziedzina sztuk muzycznych</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="21">
+                <xs:annotation>
+                    <xs:documentation>dziedzina sztuk plastycznych</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="22">
+                <xs:annotation>
+                    <xs:documentation>dziedzina sztuk teatralnych</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="disciplineScienceType">
+        <xs:restriction base="xs:long">
+            <xs:enumeration value="1">
+                <xs:annotation>
+                    <xs:documentation>archeologia</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="2">
+                <xs:annotation>
+                    <xs:documentation>bibliologia i informatologia</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="3">
+                <xs:annotation>
+                    <xs:documentation>etnologia</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="4">
+                <xs:annotation>
+                    <xs:documentation>filozofia</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="5">
+                <xs:annotation>
+                    <xs:documentation>historia</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="6">
+                <xs:annotation>
+                    <xs:documentation>historia sztuki</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="7">
+                <xs:annotation>
+                    <xs:documentation>językoznawstwo</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="8">
+                <xs:annotation>
+                    <xs:documentation>kulturoznawstwo</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="9">
+                <xs:annotation>
+                    <xs:documentation>literaturoznawstwo</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="10">
+                <xs:annotation>
+                    <xs:documentation>nauki o rodzinie</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="11">
+                <xs:annotation>
+                    <xs:documentation>nauki o sztuce</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="12">
+                <xs:annotation>
+                    <xs:documentation>nauki o zarządzaniu</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="13">
+                <xs:annotation>
+                    <xs:documentation>religioznawstwo</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="14">
+                <xs:annotation>
+                    <xs:documentation>nauki o bezpieczeństwie</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="15">
+                <xs:annotation>
+                    <xs:documentation>nauki o obronności</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="16">
+                <xs:annotation>
+                    <xs:documentation>nauki o mediach</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="17">
+                <xs:annotation>
+                    <xs:documentation>nauki o polityce</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="18">
+                <xs:annotation>
+                    <xs:documentation>nauki o polityce publicznej</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="19">
+                <xs:annotation>
+                    <xs:documentation>nauki o poznaniu i komunikacji społecznej</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="20">
+                <xs:annotation>
+                    <xs:documentation>pedagogika</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="21">
+                <xs:annotation>
+                    <xs:documentation>psychologia</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="22">
+                <xs:annotation>
+                    <xs:documentation>socjologia</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="23">
+                <xs:annotation>
+                    <xs:documentation>ekonomia</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="24">
+                <xs:annotation>
+                    <xs:documentation>finanse</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="25">
+                <xs:annotation>
+                    <xs:documentation>nauki o zarządzaniu</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="26">
+                <xs:annotation>
+                    <xs:documentation>towaroznawstwo</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="27">
+                <xs:annotation>
+                    <xs:documentation>nauki o administracji</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="28">
+                <xs:annotation>
+                    <xs:documentation>prawo</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="29">
+                <xs:annotation>
+                    <xs:documentation>prawo kanoniczne</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="30">
+                <xs:annotation>
+                    <xs:documentation>matematyka</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="31">
+                <xs:annotation>
+                    <xs:documentation>informatyka</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="32">
+                <xs:annotation>
+                    <xs:documentation>astronomia</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="33">
+                <xs:annotation>
+                    <xs:documentation>biofizyka</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="34">
+                <xs:annotation>
+                    <xs:documentation>fizyka</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="35">
+                <xs:annotation>
+                    <xs:documentation>geofizyka</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="36">
+                <xs:annotation>
+                    <xs:documentation>biochemia</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="37">
+                <xs:annotation>
+                    <xs:documentation>biotechnologia</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="38">
+                <xs:annotation>
+                    <xs:documentation>chemia</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="39">
+                <xs:annotation>
+                    <xs:documentation>ochrona środowiska</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="40">
+                <xs:annotation>
+                    <xs:documentation>technologia chemiczna</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="41">
+                <xs:annotation>
+                    <xs:documentation>biochemia</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="42">
+                <xs:annotation>
+                    <xs:documentation>biofizyka</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="43">
+                <xs:annotation>
+                    <xs:documentation>biologia</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="44">
+                <xs:annotation>
+                    <xs:documentation>biotechnologia</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="45">
+                <xs:annotation>
+                    <xs:documentation>ekologia</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="46">
+                <xs:annotation>
+                    <xs:documentation>mikrobiologia</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="47">
+                <xs:annotation>
+                    <xs:documentation>ochrona środowiska</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="48">
+                <xs:annotation>
+                    <xs:documentation>geofizyka</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="49">
+                <xs:annotation>
+                    <xs:documentation>geografia</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="50">
+                <xs:annotation>
+                    <xs:documentation>geologia</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="51">
+                <xs:annotation>
+                    <xs:documentation>oceanologia</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="52">
+                <xs:annotation>
+                    <xs:documentation>architektura i urbanistyka</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="53">
+                <xs:annotation>
+                    <xs:documentation>automatyka i robotyka</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="54">
+                <xs:annotation>
+                    <xs:documentation>biocybernetyka i inżynieria biomedyczna</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="55">
+                <xs:annotation>
+                    <xs:documentation>biotechnologia</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="56">
+                <xs:annotation>
+                    <xs:documentation>budowa i eksploatacja maszyn</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="57">
+                <xs:annotation>
+                    <xs:documentation>budownictwo</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="58">
+                <xs:annotation>
+                    <xs:documentation>elektronika</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="59">
+                <xs:annotation>
+                    <xs:documentation>elektrotechnika</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="60">
+                <xs:annotation>
+                    <xs:documentation>energetyka</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="61">
+                <xs:annotation>
+                    <xs:documentation>geodezja i kartografia</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="62">
+                <xs:annotation>
+                    <xs:documentation>górnictwo i geologia inżynierska</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="63">
+                <xs:annotation>
+                    <xs:documentation>informatyka</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="64">
+                <xs:annotation>
+                    <xs:documentation>inżynieria chemiczna</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="65">
+                <xs:annotation>
+                    <xs:documentation>inżynieria materiałowa</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="66">
+                <xs:annotation>
+                    <xs:documentation>inżynieria produkcji</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="67">
+                <xs:annotation>
+                    <xs:documentation>inżynieria środowiska</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="68">
+                <xs:annotation>
+                    <xs:documentation>mechanika</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="69">
+                <xs:annotation>
+                    <xs:documentation>metalurgia</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="70">
+                <xs:annotation>
+                    <xs:documentation>technologia chemiczna</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="71">
+                <xs:annotation>
+                    <xs:documentation>telekomunikacja</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="72">
+                <xs:annotation>
+                    <xs:documentation>transport</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="73">
+                <xs:annotation>
+                    <xs:documentation>włókiennictwo</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="74">
+                <xs:annotation>
+                    <xs:documentation>agronomia</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="75">
+                <xs:annotation>
+                    <xs:documentation>biotechnologia</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="76">
+                <xs:annotation>
+                    <xs:documentation>inżynieria rolnicza</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="77">
+                <xs:annotation>
+                    <xs:documentation>ochrona i kształtowanie środowiska</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="78">
+                <xs:annotation>
+                    <xs:documentation>ogrodnictwo</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="79">
+                <xs:annotation>
+                    <xs:documentation>rybactwo</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="80">
+                <xs:annotation>
+                    <xs:documentation>technologia żywności i żywienia</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="81">
+                <xs:annotation>
+                    <xs:documentation>zootechnika</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="82">
+                <xs:annotation>
+                    <xs:documentation>drzewnictwo</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="83">
+                <xs:annotation>
+                    <xs:documentation>leśnictwo</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="84">
+                <xs:annotation>
+                    <xs:documentation>biologia medyczna</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="85">
+                <xs:annotation>
+                    <xs:documentation>medycyna</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="86">
+                <xs:annotation>
+                    <xs:documentation>stomatologia</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="87">
+                <xs:annotation>
+                    <xs:documentation>dyrygentura</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="88">
+                <xs:annotation>
+                    <xs:documentation>instrumentalistyka</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="89">
+                <xs:annotation>
+                    <xs:documentation>kompozycja i teoria muzyki</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="90">
+                <xs:annotation>
+                    <xs:documentation>reżyseria dźwięku</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="91">
+                <xs:annotation>
+                    <xs:documentation>rytmika i taniec</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="92">
+                <xs:annotation>
+                    <xs:documentation>wokalistyka</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="93">
+                <xs:annotation>
+                    <xs:documentation>sztuki piękne</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="94">
+                <xs:annotation>
+                    <xs:documentation>sztuki projektowe</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="95">
+                <xs:annotation>
+                    <xs:documentation>konserwacja i restauracja dzieł sztuki</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+        </xs:restriction>
+    </xs:simpleType>
+
+
+    <xs:element name="ici-import">
+        <xs:annotation>
+            <xs:documentation>Schemat importu danych</xs:documentation>
+        </xs:annotation>
+
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="journal" nillable="false">
+                    <xs:complexType>
+                        <xs:attribute name="issn" type="xs:string" use="required">
+                            <xs:annotation>
+                                <xs:documentation>issn czasopisma</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="issue" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="article" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="type" type="articleType">
+                                            <xs:annotation>
+                                                <xs:documentation>typ artykułu</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="languageVersion" maxOccurs="unbounded">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="title" type="xs:string" nillable="false" />
+                                                    <xs:element name="abstract" type="xs:string" nillable="false" />
+                                                    <xs:element name="pdfFileUrl" type="xs:anyURI" minOccurs="0">
+                                                        <xs:annotation>
+                                                            <xs:documentation>pdf url</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="publicationDate" type="xs:dateTime" minOccurs="0">
+                                                        <xs:annotation>
+                                                            <xs:documentation>data publikacji</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="registrationDate" type="xs:dateTime" minOccurs="0">
+                                                        <xs:annotation>
+                                                            <xs:documentation>data rejestracji</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="pageFrom" type="xs:integer" minOccurs="0">
+                                                        <xs:annotation>
+                                                            <xs:documentation>strona od</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="pageTo" type="xs:integer" minOccurs="0">
+                                                        <xs:annotation>
+                                                            <xs:documentation>strona do</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="doi" type="xs:string" minOccurs="0">
+                                                        <xs:annotation>
+                                                            <xs:documentation>doi</xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="keywords" minOccurs="0">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="keyword" type="xs:string" maxOccurs="unbounded"/>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                                <xs:attribute name="externalId" type="xs:string" use="optional">
+                                                    <xs:annotation>
+                                                        <xs:documentation>dodatkowy identyfikator</xs:documentation>
+                                                    </xs:annotation>
+                                                </xs:attribute>
+                                                <xs:attribute name="language" type="xs:string" use="optional" default="PL">
+                                                    <xs:annotation>
+                                                        <xs:documentation>kod iso języka - domyślnie PL</xs:documentation>
+                                                    </xs:annotation>
+                                                </xs:attribute>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="authors">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="author" maxOccurs="unbounded">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="name" type="xs:string" nillable="false"/>
+                                                                <xs:element name="name2" type="xs:string" minOccurs="0"/>
+                                                                <xs:element name="surname" type="xs:string" nillable="false"/>
+                                                                <xs:element name="email" type="xs:string"/>
+                                                                <xs:element name="polishAffiliation" type="xs:boolean" minOccurs="0"/>
+                                                                <xs:element name="order" type="xs:integer"/>
+                                                                <xs:element name="instituteAffiliation" type="xs:string" minOccurs="0"/>
+                                                                <xs:element name="departmentAffiliation" type="xs:string" minOccurs="0"/>
+                                                                <xs:element name="subjectAffiliation" type="xs:string" minOccurs="0"/>
+                                                                <xs:element name="role" type="roleType" minOccurs="0"/>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="references">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="reference" maxOccurs="unbounded">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="unparsedContent" type="xs:string" nillable="false"/>
+                                                                <xs:element name="order" type="xs:integer" nillable="false"/>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="disciplineSciences" minOccurs="0">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="areaScience" type="areaScienceType" maxOccurs="unbounded"/>
+                                                    <xs:element name="fieldScience" type="fieldScienceType" maxOccurs="unbounded"/>
+                                                    <xs:element name="disciplineScience" type="disciplineScienceType" minOccurs="0" maxOccurs="unbounded"/>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                    <xs:attribute name="icid" type="xs:integer" use="optional">
+                                        <xs:annotation>
+                                            <xs:documentation>icid</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:attribute>
+                                    <xs:attribute name="gicid" type="xs:string" use="optional">
+                                        <xs:annotation>
+                                            <xs:documentation>gicid</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:attribute>
+                                    <xs:attribute name="externalId" type="xs:string" use="optional">
+                                        <xs:annotation>
+                                            <xs:documentation>dodatkowy identyfikator</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:attribute>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="number" type="xs:string" use="required">
+                            <xs:annotation>
+                                <xs:documentation>numer</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+                        <xs:attribute name="volume" type="xs:string" use="required">
+                            <xs:annotation>
+                                <xs:documentation>tom</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+                        <xs:attribute name="year" type="xs:integer" use="required">
+                            <xs:annotation>
+                                <xs:documentation>rok</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+                        <xs:attribute name="publicationDate" type="xs:dateTime" use="optional">
+                            <xs:annotation>
+                                <xs:documentation>data publikacji</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+                        <xs:attribute name="coverDate" type="xs:string" use="optional">
+                            <xs:annotation>
+                                <xs:documentation>data z okładki</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+                        <xs:attribute name="coverUrl" type="xs:anyURI" use="optional">
+                            <xs:annotation>
+                                <xs:documentation>url do okładki</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+                        <xs:attribute name="electronicContentPdfUrl" type="xs:anyURI" use="optional">
+                            <xs:annotation>
+                                <xs:documentation>url do PDF z zawartością czasopisma</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+                        <xs:attribute name="numberOfArticles" type="xs:integer" use="optional">
+                            <xs:annotation>
+                                <xs:documentation>liczba artykułów</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
