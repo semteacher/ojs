@@ -1,16 +1,17 @@
 <?php
 
 /**
- * @file plugins/importexport/doaj/DOAJPlugin.inc.php
+ * @file plugins/importexport/copernicus/DOAJPlugin.inc.php
  *
  * Copyright (c) 2013-2017 Simon Fraser University
  * Copyright (c) 2003-2016 John Willinsky
+ * Copyright (c) 2017 Andriy Semenets 
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
- * @class DOAJPlugin
- * @ingroup plugins_importexport_doaj
+ * @class CopernicusPlugin
+ * @ingroup plugins_importexport_copernicus
  *
- * @brief DOAJ import/export plugin
+ * @brief Copernicus import/export plugin
  */
 
 import('lib.pkp.classes.xml.XMLCustomWriter');
@@ -18,13 +19,13 @@ import('lib.pkp.classes.xml.XMLCustomWriter');
 import('classes.plugins.ImportExportPlugin');
 
 // Export types.
-define('DOAJ_EXPORT_ISSUES', 0x01);
-define('DOAJ_EXPORT_ARTICLES', 0x02);
+define('COPERNICUS_EXPORT_ISSUES', 0x01);
+define('COPERNICUS_EXPORT_ARTICLES', 0x02);
 
+//TODO: ask shevchuk to get link
+define('COPERNICUS_XSD_URL', 'http://doaj.org/static/doaj/doajArticles.xsd');
 
-define('DOAJ_XSD_URL', 'http://doaj.org/static/doaj/doajArticles.xsd');
-
-class DOAJPlugin extends ImportExportPlugin {
+class CopernicusPlugin extends ImportExportPlugin {
 
 	/** @var PubObjectCache */
 	var $_cache;
@@ -65,7 +66,7 @@ class DOAJPlugin extends ImportExportPlugin {
 	 * @return String name of plugin
 	 */
 	function getName() {
-		return 'DOAJPlugin';
+		return 'CopernicusPlugin';
 	}
 
 	/**
@@ -73,7 +74,7 @@ class DOAJPlugin extends ImportExportPlugin {
 	 * @return string
 	 */
 	function getDisplayName() {
-		return __('plugins.importexport.doaj.displayName');
+		return __('plugins.importexport.copernicus.displayName');
 	}
 
 	/**
@@ -81,7 +82,7 @@ class DOAJPlugin extends ImportExportPlugin {
 	 * @return string
 	 */
 	function getDescription() {
-		return __('plugins.importexport.doaj.description');
+		return __('plugins.importexport.copernicus.description');
 	}
 
 	/**
@@ -124,12 +125,13 @@ class DOAJPlugin extends ImportExportPlugin {
 	 * @param $outputFile string
 	 */
 	function _exportJournal($journal, $selectedObjects, $outputFile = null) {
-		$this->import('classes.DOAJExportDom');
+		$this->import('classes.CopernicusExportDom');
 		$doc = XMLCustomWriter::createDocument();
 
-		$journalNode = DOAJExportDom::generateJournalDom($doc, $journal, $selectedObjects);
+		$journalNode = CopernicusExportDom::generateJournalDom($doc, $journal, $selectedObjects);
 		$journalNode->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
-		$journalNode->setAttribute('xsi:noNamespaceSchemaLocation', DOAJ_XSD_URL);
+        //TODO - or skip?
+		$journalNode->setAttribute('xsi:noNamespaceSchemaLocation', COPERNICUS_XSD_URL);
 		XMLCustomWriter::appendChild($doc, $journalNode);
 
 		if (!empty($outputFile)) {
@@ -146,7 +148,7 @@ class DOAJPlugin extends ImportExportPlugin {
 	}
 
 	/**
-	 * Label articles (on article or issue level) with a 'doaj::registered' flag
+	 * Label articles (on article or issue level) with a 'copernicus::registered' flag
 	 * @param $request PKPRequest
 	 * @param $selectedObjects array
 	 */
@@ -156,24 +158,24 @@ class DOAJPlugin extends ImportExportPlugin {
 		$this->registerDaoHook('ArticleDAO');
 
 		// check for articles
-		$selectedArticles = $selectedObjects[DOAJ_EXPORT_ARTICLES];
+		$selectedArticles = $selectedObjects[COPERNICUS_EXPORT_ARTICLES];
 		if (is_array($selectedArticles) && !empty($selectedArticles)) {
 
 			foreach($selectedArticles as $articleId) {
 				$article = $articleDao->getArticle($articleId);
-				$article->setData('doaj::registered', 1);
+				$article->setData('copernicus::registered', 1);
 				$articleDao->updateArticle($article);
 			}
 		}
 
 		// check for issues
-		$selectedIssues = $selectedObjects[DOAJ_EXPORT_ISSUES];
+		$selectedIssues = $selectedObjects[COPERNICUS_EXPORT_ISSUES];
 		if (is_array($selectedIssues) && !empty($selectedIssues)) {
 
 			foreach($selectedIssues as $issueId) {
 				$articles = $this->_retrieveArticlesByIssueId($issueId);
 				foreach($articles as $article) {
-					$article->setData('doaj::registered', 1);
+					$article->setData('copernicus::registered', 1);
 					$articleDao->updateArticle($article);
 				}
 			}
@@ -182,7 +184,7 @@ class DOAJPlugin extends ImportExportPlugin {
 		// show message & redirect
 		$this->_sendNotification(
 			$request,
-			'plugins.importexport.doaj.markRegistered.success',
+			'plugins.importexport.copernicus.markRegistered.success',
 			NOTIFICATION_TYPE_SUCCESS
 		);
 		
@@ -212,7 +214,7 @@ class DOAJPlugin extends ImportExportPlugin {
 		$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
 		$issueIterator = $issueDao->getPublishedIssues($journal->getId());
 
-		// check whether all articles of an issue are doaj::registered or not
+		// check whether all articles of an issue are copernicus::registered or not
 		$issues = array();
 		while ($issue = $issueIterator->next()) {
 			$issueId = $issue->getId();
@@ -220,13 +222,13 @@ class DOAJPlugin extends ImportExportPlugin {
 			$allArticlesRegistered = true;
 
 			foreach($articles as $article) {
-				if (!$article->getData('doaj::registered')) {
+				if (!$article->getData('copernicus::registered')) {
 					$allArticlesRegistered = false;
 					break;
 				}
 			}
 
-			$issue->setData('doaj::registered', $allArticlesRegistered);
+			$issue->setData('copernicus::registered', $allArticlesRegistered);
 			$issues[] = $issue;
 			unset($issue);
 		}
@@ -255,8 +257,8 @@ class DOAJPlugin extends ImportExportPlugin {
 			// Retrieve all published articles.
 			$articles = $this->_getAllPublishedArticles($journal);
 		} else {
-			// Retrieve array elements without index "doaj::registered"
-			$articles = array_filter($this->_getAllPublishedArticles($journal), create_function('$article', 'return !$article["article"]->getData("doaj::registered");'));
+			// Retrieve array elements without index "copernicus::registered"
+			$articles = array_filter($this->_getAllPublishedArticles($journal), create_function('$article', 'return !$article["article"]->getData("copernicus::registered");'));
 		}
 		
 		// Paginate articles.
@@ -382,8 +384,8 @@ class DOAJPlugin extends ImportExportPlugin {
 	 */
 	function _getAllObjectTypes() {
 		return array(
-			'issue' => DOAJ_EXPORT_ISSUES,
-			'article' => DOAJ_EXPORT_ARTICLES,
+			'issue' => COPERNICUS_EXPORT_ISSUES,
+			'article' => COPERNICUS_EXPORT_ARTICLES,
 		);
 	}
 
@@ -435,7 +437,7 @@ class DOAJPlugin extends ImportExportPlugin {
 	}
 
 	/**
-	 * Hook callback that returns the "daoj:registered" flag
+	 * Hook callback that returns the "copernicus:registered" flag
 	 * @param $hookName string
 	 * @param $args array
 	 */
@@ -443,7 +445,7 @@ class DOAJPlugin extends ImportExportPlugin {
 		assert(count($args) == 2);
 		$returner =& $args[1];
 		assert(is_array($returner));
-		$returner[] = 'doaj::registered';
+		$returner[] = 'copernicus::registered';
 	}
 
 	/**

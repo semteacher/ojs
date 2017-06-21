@@ -2,17 +2,18 @@
 <!DOCTYPE version SYSTEM "../../../lib/pkp/dtd/pluginVersion.dtd">
 
 <!--
-  * vplugins/importexport/doaj/ersion.xml
+  * vplugins/importexport/copernicus/ersion.xml
   *
   * Copyright (c) 2013-2017 Simon Fraser University
   * Copyright (c) 2003-2016 John Willinsky
+  * Copyright (c) 2017 Andriy Semenets  
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
   * Plugin version information.
   -->
 <version>
-	<application>doaj</application>
+	<application>copernicus</application>
 	<type>plugins.importexport</type>
-	<release>1.0.0.0</release>
-	<date>2009-07-13</date>
+	<release>0.0.0.1</release>
+	<date>2017-06-21</date>
 </version>
