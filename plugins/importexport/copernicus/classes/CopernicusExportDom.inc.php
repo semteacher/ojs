@@ -38,11 +38,29 @@ class CopernicusExportDom {
 		$selectedIssues = array();
 		if (isset($selectedObjects[COPERNICUS_EXPORT_ISSUES])) {
 			$selectedIssues = $selectedObjects[COPERNICUS_EXPORT_ISSUES];
-			
+                    //write journal record into XML
+                    $journalNodeData = XMLCustomWriter::createElement($doc, 'journal');
+                    XMLCustomWriter::setAttribute($journalNodeData, 'issn', $journal->getSetting('printIssn'));
+                    $journalNode = XMLCustomWriter::appendChild($records, $journalNodeData);                    
 			// make sure the selected issues belong to the current journal
 			foreach($selectedIssues as $key => $selectedIssueId) {
 				$selectedIssue = $issueDao->getIssueById($selectedIssueId, $journalId);
-				if (!$selectedIssue) unset($selectedIssues[$key]);
+				if (!$selectedIssue) {
+                    unset($selectedIssues[$key]);
+                } else {
+                    //write issue record to XML
+                    $journalIssueNodeData = XMLCustomWriter::createElement($doc, 'issue');
+                    //get issue data
+                    $issue = $issueDao->getIssueById($selectedIssueId);
+                    /* --- set issue's data: publication date, volume, number, DOI --- */
+                    XMLCustomWriter::setAttribute($journalIssueNodeData, 'number', $issue->getNumber());
+                    XMLCustomWriter::setAttribute($journalIssueNodeData, 'volume', $issue->getVolume());
+                    XMLCustomWriter::setAttribute($journalIssueNodeData, 'year', $issue->getYear());
+                    XMLCustomWriter::setAttribute($journalIssueNodeData, 'publicationDate', CopernicusExportDom::formatDate($issue->getDatePublished()));
+                    XMLCustomWriter::setAttribute($journalIssueNodeData, 'numberOfArticles', $issue->getNumArticles());
+                    //assign issue record to a journal node
+                    $journalIssueNode = XMLCustomWriter::appendChild($journalNode, $journalIssueNodeData);
+                }
 			}
 		}
 
@@ -76,7 +94,10 @@ class CopernicusExportDom {
 			$section = $sectionDao->getSection($pubArticle->getSectionId());
 			$articleNode = CopernicusExportDom::generateArticleDom($doc, $journal, $issue, $section, $pubArticle);
 
-			XMLCustomWriter::appendChild($records, $articleNode);
+			//XMLCustomWriter::appendChild($records, $articleNode);
+            //Copernicus's root node
+            //TODO: get correct issue node if multiple issues exported
+            XMLCustomWriter::appendChild($journalIssueNode, $articleNode);
 
 			unset($issue, $section, $articleNode);
 		}
@@ -93,7 +114,7 @@ class CopernicusExportDom {
 	 * @param $article object Article
 	 */
 	function generateArticleDom($doc, $journal, $issue, $section, $article) {
-		$root = XMLCustomWriter::createElement($doc, 'record');
+		$root = XMLCustomWriter::createElement($doc, 'article');
 
 		/* --- Article Language --- */
 		XMLCustomWriter::createChildWithText($doc, $root, 'language', CopernicusExportDom::mapLang($article->getLanguage()), false);
