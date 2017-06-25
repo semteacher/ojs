@@ -117,22 +117,46 @@ class CopernicusExportDom {
 		$root = XMLCustomWriter::createElement($doc, 'article');
 
         /* --- Article Type --- */
-		XMLCustomWriter::createChildWithText($doc, $root, 'type', CopernicusExportDom::mapArticleType(0), false);
+		$typeNode = XMLCustomWriter::createChildWithText($doc, $root, 'type', CopernicusExportDom::mapArticleType(0), false);
         //XMLCustomWriter::setAttribute($root, 'type', 'articleType'); //TODO: change 
+		
+        /* --- Article meta-data by language --- */
+        $langVersionNodeData = XMLCustomWriter::createElement($doc, 'languageVersion');
+        $locale = $article->getLocale();
+        //var_dump($article);
+        //var_dump(substr($locale, 3, 2));
+        //TODO: re-factor
+        if (strlen($locale) == 5) {
+            XMLCustomWriter::setAttribute($langVersionNodeData, 'language', substr($locale, 3, 2));
+        } else {
+            XMLCustomWriter::setAttribute($langVersionNodeData, 'language', CopernicusExportDom::mapLang(String::substr($locale, 0, 2)));
+        }
+        $langVersionNode = XMLCustomWriter::appendChild($root, $langVersionNodeData);
+		
+        $titleNode = XMLCustomWriter::createChildWithText($doc, $langVersionNode, 'title', $article->getTitle($locale));
+        $abstractNode = XMLCustomWriter::createChildWithText($doc, $langVersionNode, 'abstract', $article->getAbstract($locale));
+        
+        //foreach ((array) $article->getTitle(null) as $locale => $title) {
+		//	if (empty($title)) continue;
+
+		//	$titleNode = XMLCustomWriter::createChildWithText($doc, $root, 'title', $title);
+		//	if (strlen($locale) == 5) XMLCustomWriter::setAttribute($titleNode, 'language', CopernicusExportDom::mapLang(String::substr($locale, 0, 2)));
+		//}
+        
         
         //CopernicusExportDom::mapLang(String::substr($locale, 0, 2)
 		/* --- Article Language --- */
 		XMLCustomWriter::createChildWithText($doc, $root, 'language', CopernicusExportDom::mapLang($article->getLanguage()), false);
 
 		/* --- Publisher name (i.e. institution name) --- */
-		XMLCustomWriter::createChildWithText($doc, $root, 'publisher', $journal->getSetting('publisherInstitution'), false);
+		//XMLCustomWriter::createChildWithText($doc, $root, 'publisher', $journal->getSetting('publisherInstitution'), false);
 
 		/* --- Journal's title --- */
-		XMLCustomWriter::createChildWithText($doc, $root, 'journalTitle', $journal->getTitle($journal->getPrimaryLocale()), false);
+		//XMLCustomWriter::createChildWithText($doc, $root, 'journalTitle', $journal->getTitle($journal->getPrimaryLocale()), false);
 
 		/* --- Identification Numbers --- */
-		XMLCustomWriter::createChildWithText($doc, $root, 'issn', $journal->getSetting('printIssn'), false);
-		XMLCustomWriter::createChildWithText($doc, $root, 'eissn', $journal->getSetting('onlineIssn'), false);
+		//XMLCustomWriter::createChildWithText($doc, $root, 'issn', $journal->getSetting('printIssn'), false);
+		//XMLCustomWriter::createChildWithText($doc, $root, 'eissn', $journal->getSetting('onlineIssn'), false);
 
 		/* --- Article's publication date, volume, issue, DOI --- */
 		if ($article->getDatePublished()) {
@@ -142,9 +166,9 @@ class CopernicusExportDom {
 			XMLCustomWriter::createChildWithText($doc, $root, 'publicationDate', CopernicusExportDom::formatDate($issue->getDatePublished()), false);
 		}
 
-		XMLCustomWriter::createChildWithText($doc, $root, 'volume',  $issue->getVolume(), false);
+		//XMLCustomWriter::createChildWithText($doc, $root, 'volume',  $issue->getVolume(), false);
 
-		XMLCustomWriter::createChildWithText($doc, $root, 'issue',  $issue->getNumber(), false);
+		//XMLCustomWriter::createChildWithText($doc, $root, 'issue',  $issue->getNumber(), false);
 
 		/** --- FirstPage / LastPage (from PubMed plugin)---
 		 * there is some ambiguity for online journals as to what
@@ -169,13 +193,7 @@ class CopernicusExportDom {
 
 		XMLCustomWriter::createChildWithText($doc, $root, 'documentType',  $article->getType($article->getLocale()), false);
 
-		/* --- Article title --- */
-		foreach ((array) $article->getTitle(null) as $locale => $title) {
-			if (empty($title)) continue;
 
-			$titleNode = XMLCustomWriter::createChildWithText($doc, $root, 'title', $title);
-			if (strlen($locale) == 5) XMLCustomWriter::setAttribute($titleNode, 'language', CopernicusExportDom::mapLang(String::substr($locale, 0, 2)));
-		}
 
 		/* --- Authors and affiliations --- */
 		$authors = XMLCustomWriter::createElement($doc, 'authors');
@@ -287,12 +305,11 @@ class CopernicusExportDom {
 	}
 
 	/**
-	 * Map a language from a 2-letter code to a 3-letter code.
-	 * FIXME: This should be moved to XML and reconciled against
-	 * other mapping implementations.
+	 * Map a language from a 2-letter code to a 2-letter country code. 
 	 * @param $val string 2-letter language code to map
 	 * @return string
 	 */
+     //TODO: convert all!
 	function mapLang($val) {
 		switch ($val) {
 			case "aa": return "aar"; break;
@@ -340,15 +357,15 @@ class CopernicusExportDom {
 			case "cy": return "wel"; break;
 			case "cym": return "wel"; break;
 			case "da": return "dan"; break;
-			case "de": return "ger"; break;
-			case "deu": return "ger"; break;
+			case "de": return "DE"; break;
+			case "deu": return "DE"; break;
 			case "dv": return "div"; break;
 			case "nl": return "dut"; break;
 			case "nld": return "dut"; break;
 			case "dz": return "dzo"; break;
 			case "el": return "gre"; break;
 			case "ell": return "gre"; break;
-			case "en": return "eng"; break;
+			case "en": return "UK"; break;
 			case "eo": return "epo"; break;
 			case "et": return "est"; break;
 			case "ee": return "ewe"; break;
@@ -444,7 +461,7 @@ class CopernicusExportDom {
 			case "os": return "oss"; break;
 			case "pa": return "pan"; break;
 			case "pi": return "pli"; break;
-			case "pl": return "pol"; break;
+			case "pl": return "PL"; break;
 			case "pt": return "por"; break;
 			case "ps": return "pus"; break;
 			case "qu": return "que"; break;
@@ -452,7 +469,7 @@ class CopernicusExportDom {
 			case "ro": return "rum"; break;
 			case "ron": return "rum"; break;
 			case "rn": return "run"; break;
-			case "ru": return "rus"; break;
+			case "ru": return "RU"; break;
 			case "sg": return "sag"; break;
 			case "sa": return "san"; break;
 			case "sr": return "scc"; break;
@@ -488,7 +505,7 @@ class CopernicusExportDom {
 			case "tr": return "tur"; break;
 			case "tw": return "twi"; break;
 			case "ug": return "uig"; break;
-			case "uk": return "ukr"; break;
+			case "uk": return "UA"; break;
 			case "ur": return "urd"; break;
 			case "uz": return "uzb"; break;
 			case "ve": return "ven"; break;
