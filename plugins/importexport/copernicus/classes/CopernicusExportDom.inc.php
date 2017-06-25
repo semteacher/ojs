@@ -116,6 +116,11 @@ class CopernicusExportDom {
 	function generateArticleDom($doc, $journal, $issue, $section, $article) {
 		$root = XMLCustomWriter::createElement($doc, 'article');
 
+        /* --- Article Type --- */
+		XMLCustomWriter::createChildWithText($doc, $root, 'type', CopernicusExportDom::mapArticleType(0), false);
+        //XMLCustomWriter::setAttribute($root, 'type', 'articleType'); //TODO: change 
+        
+        //CopernicusExportDom::mapLang(String::substr($locale, 0, 2)
 		/* --- Article Language --- */
 		XMLCustomWriter::createChildWithText($doc, $root, 'language', CopernicusExportDom::mapLang($article->getLanguage()), false);
 
@@ -499,6 +504,27 @@ class CopernicusExportDom {
 			default: return "";
 		}
 	}
+    
+	/**
+	 * Map a articleType
+	 * @param $articleTypeId int articleTypeId 
+	 * @return string
+	 */
+	function mapArticleType($articleTypeId = 0) {
+        switch ($articleTypeId) {
+            case 0: return "ORIGINAL_ARTICLE"; break;
+            case 0: return "REVIEW_ARTICLE"; break;
+            case 0: return "SHORT_COMMUNICATION"; break;
+            case 0: return "COMMENTARY_ON_THE_LAW"; break;
+            case 0: return "SCIENTIFIC_REVIEW"; break;
+            case 0: return "GUIDELINES"; break;
+            case 0: return "POPULAR_SCIENCE_ARTICLE"; break;
+            case 0: return "OTHERS_NONCITABLE"; break;
+            case 0: return "OTHERS_CITABLE"; break;
+            case 0: return "CASE_STUDY"; break;
+            default: return "ORIGINAL_ARTICLE";
+        }
+    }
 }
 
 ?>
