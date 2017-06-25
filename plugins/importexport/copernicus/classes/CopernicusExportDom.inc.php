@@ -31,7 +31,8 @@ class CopernicusExportDom {
 		$journalId = $journal->getId();
 
 		// Records node contains all articles, each called a record
-		$records = XMLCustomWriter::createElement($doc, 'records');
+		//$records = XMLCustomWriter::createElement($doc, 'records');
+        $records = XMLCustomWriter::createElement($doc, 'ici-import');
 		
 		// retrieve selected issues
 		$selectedIssues = array();
