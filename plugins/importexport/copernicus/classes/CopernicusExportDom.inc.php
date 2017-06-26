@@ -114,7 +114,8 @@ class CopernicusExportDom {
 	 * @param $article object Article
 	 */
 	function generateArticleDom($doc, $journal, $issue, $section, $article) {
-		$root = XMLCustomWriter::createElement($doc, 'article');
+		//article root
+        $root = XMLCustomWriter::createElement($doc, 'article');
 
         /* --- Article Type --- */
 		$typeNode = XMLCustomWriter::createChildWithText($doc, $root, 'type', CopernicusExportDom::mapArticleType(0), false);
@@ -131,10 +132,53 @@ class CopernicusExportDom {
         } else {
             XMLCustomWriter::setAttribute($langVersionNodeData, 'language', CopernicusExportDom::mapLang(String::substr($locale, 0, 2)));
         }
+        //article local language version root
         $langVersionNode = XMLCustomWriter::appendChild($root, $langVersionNodeData);
 		
         $titleNode = XMLCustomWriter::createChildWithText($doc, $langVersionNode, 'title', $article->getTitle($locale));
         $abstractNode = XMLCustomWriter::createChildWithText($doc, $langVersionNode, 'abstract', $article->getAbstract($locale));
+
+		/* --- FullText URL --- */
+		$fullTextUrl = XMLCustomWriter::createChildWithText($doc, $langVersionNode, 'pdfFileUrl', Request::url(null, 'article', 'view', $article->getId()));
+		XMLCustomWriter::setAttribute($fullTextUrl, 'format', 'html');
+        
+		/* --- Article's publication date, pages, DOI --- */
+		if ($article->getDatePublished()) {
+			XMLCustomWriter::createChildWithText($doc, $langVersionNode, 'publicationDate', CopernicusExportDom::formatDate($article->getDatePublished()), false);			
+		}
+		else {
+			XMLCustomWriter::createChildWithText($doc, $langVersionNode, 'publicationDate', CopernicusExportDom::formatDate($issue->getDatePublished()), false);
+		}
+
+		/** --- FirstPage / LastPage (from PubMed plugin)---
+		 * there is some ambiguity for online journals as to what
+		 * "page numbers" are; for example, some journals (eg. JMIR)
+		 * use the "e-location ID" as the "page numbers" in PubMed
+		 */
+		$pages = $article->getPages();
+		if (preg_match("/([0-9]+)\s*-\s*([0-9]+)/i", $pages, $matches)) {
+			// simple pagination (eg. "pp. 3-8")
+			XMLCustomWriter::createChildWithText($doc, $langVersionNode, 'pageFrom', $matches[1]);
+			XMLCustomWriter::createChildWithText($doc, $langVersionNode, 'pageTo', $matches[2]);
+		} elseif (preg_match("/(e[0-9]+)/i", $pages, $matches)) {
+			// elocation-id (eg. "e12")
+			XMLCustomWriter::createChildWithText($doc, $langVersionNode, 'pageFrom', $matches[1]);
+			XMLCustomWriter::createChildWithText($doc, $langVersionNode, 'pageTo', $matches[1]);
+		}
+
+		XMLCustomWriter::createChildWithText($doc, $langVersionNode, 'doi',  $article->getPubId('doi'), false);
+		/* --- Article's publication date, pages, DOI --- */
+
+		/* --- Keywords --- */
+		$keywords = XMLCustomWriter::createElement($doc, 'keywords');
+		XMLCustomWriter::appendChild($langVersionNode, $keywords);
+
+		$subjects = array_map('trim', explode(';', $article->getSubject($article->getLocale())));
+
+		foreach ($subjects as $keyword) {
+			XMLCustomWriter::createChildWithText($doc, $keywords, 'keyword', $keyword, false);
+		}
+
         
         //foreach ((array) $article->getTitle(null) as $locale => $title) {
 		//	if (empty($title)) continue;
@@ -146,7 +190,7 @@ class CopernicusExportDom {
         
         //CopernicusExportDom::mapLang(String::substr($locale, 0, 2)
 		/* --- Article Language --- */
-		XMLCustomWriter::createChildWithText($doc, $root, 'language', CopernicusExportDom::mapLang($article->getLanguage()), false);
+		//XMLCustomWriter::createChildWithText($doc, $root, 'language', CopernicusExportDom::mapLang($article->getLanguage()), false);
 
 		/* --- Publisher name (i.e. institution name) --- */
 		//XMLCustomWriter::createChildWithText($doc, $root, 'publisher', $journal->getSetting('publisherInstitution'), false);
@@ -158,41 +202,19 @@ class CopernicusExportDom {
 		//XMLCustomWriter::createChildWithText($doc, $root, 'issn', $journal->getSetting('printIssn'), false);
 		//XMLCustomWriter::createChildWithText($doc, $root, 'eissn', $journal->getSetting('onlineIssn'), false);
 
-		/* --- Article's publication date, volume, issue, DOI --- */
-		if ($article->getDatePublished()) {
-			XMLCustomWriter::createChildWithText($doc, $root, 'publicationDate', CopernicusExportDom::formatDate($article->getDatePublished()), false);			
-		}
-		else {
-			XMLCustomWriter::createChildWithText($doc, $root, 'publicationDate', CopernicusExportDom::formatDate($issue->getDatePublished()), false);
-		}
+
 
 		//XMLCustomWriter::createChildWithText($doc, $root, 'volume',  $issue->getVolume(), false);
 
 		//XMLCustomWriter::createChildWithText($doc, $root, 'issue',  $issue->getNumber(), false);
 
-		/** --- FirstPage / LastPage (from PubMed plugin)---
-		 * there is some ambiguity for online journals as to what
-		 * "page numbers" are; for example, some journals (eg. JMIR)
-		 * use the "e-location ID" as the "page numbers" in PubMed
-		 */
-		$pages = $article->getPages();
-		if (preg_match("/([0-9]+)\s*-\s*([0-9]+)/i", $pages, $matches)) {
-			// simple pagination (eg. "pp. 3-8")
-			XMLCustomWriter::createChildWithText($doc, $root, 'startPage', $matches[1]);
-			XMLCustomWriter::createChildWithText($doc, $root, 'endPage', $matches[2]);
-		} elseif (preg_match("/(e[0-9]+)/i", $pages, $matches)) {
-			// elocation-id (eg. "e12")
-			XMLCustomWriter::createChildWithText($doc, $root, 'startPage', $matches[1]);
-			XMLCustomWriter::createChildWithText($doc, $root, 'endPage', $matches[1]);
-		}
 
-		XMLCustomWriter::createChildWithText($doc, $root, 'doi',  $article->getPubId('doi'), false);
 
-		/* --- Article's publication date, volume, issue, DOI --- */
-		XMLCustomWriter::createChildWithText($doc, $root, 'publisherRecordId',  $article->getPublishedArticleId(), false);
 
-		XMLCustomWriter::createChildWithText($doc, $root, 'documentType',  $article->getType($article->getLocale()), false);
-
+		//XMLCustomWriter::createChildWithText($doc, $root, 'publisherRecordId',  $article->getPublishedArticleId(), false);
+//var_dump($article->getPublishedArticleId());
+		//XMLCustomWriter::createChildWithText($doc, $root, 'documentType',  $article->getType($article->getLocale()), false);
+//var_dump($article->getType($article->getLocale()));
 
 
 		/* --- Authors and affiliations --- */
@@ -201,44 +223,34 @@ class CopernicusExportDom {
 
 		$affilList = CopernicusExportDom::generateAffiliationsList($article->getAuthors(), $article);
 
-		foreach ($article->getAuthors() as $author) {
-			$authorNode = CopernicusExportDom::generateAuthorDom($doc, $root, $issue, $article, $author, $affilList);
+		foreach ($article->getAuthors() as $key=>$author) {
+			$authorNode = CopernicusExportDom::generateAuthorDom($doc, $journal, $issue, $article, $key, $author, $affilList);
 			XMLCustomWriter::appendChild($authors, $authorNode);
 			unset($authorNode);
 		}
 
-		if (!empty($affilList[0])) {
-			$affils = XMLCustomWriter::createElement($doc, 'affiliationsList');
-			XMLCustomWriter::appendChild($root, $affils);
+		//if (!empty($affilList[0])) {
+		//	$affils = XMLCustomWriter::createElement($doc, 'affiliationsList');
+		//	XMLCustomWriter::appendChild($root, $affils);
 
-			for ($i = 0; $i < count($affilList); $i++) {
-				$affilNode = XMLCustomWriter::createChildWithText($doc, $affils, 'affiliationName', $affilList[$i]);
-				XMLCustomWriter::setAttribute($affilNode, 'affiliationId', $i);
-				unset($affilNode);
-			}
-		}
+		//	for ($i = 0; $i < count($affilList); $i++) {
+		//		$affilNode = XMLCustomWriter::createChildWithText($doc, $affils, 'affiliationName', $affilList[$i]);
+		//		XMLCustomWriter::setAttribute($affilNode, 'affiliationId', $i);
+		//		unset($affilNode);
+		//	}
+		//}
 
 		/* --- Abstract --- */
-		foreach ((array) $article->getAbstract(null) as $locale => $abstract) {
-			if (empty($abstract)) continue;
+		//foreach ((array) $article->getAbstract(null) as $locale => $abstract) {
+		//	if (empty($abstract)) continue;
 
-			$abstractNode = XMLCustomWriter::createChildWithText($doc, $root, 'abstract', String::html2text($abstract));
-			if (strlen($locale) == 5) XMLCustomWriter::setAttribute($abstractNode, 'language', CopernicusExportDom::mapLang(String::substr($locale, 0, 2)));
-		}
+		//	$abstractNode = XMLCustomWriter::createChildWithText($doc, $root, 'abstract', String::html2text($abstract));
+		//	if (strlen($locale) == 5) XMLCustomWriter::setAttribute($abstractNode, 'language', CopernicusExportDom::mapLang(String::substr($locale, 0, 2)));
+		//}
 
-		/* --- FullText URL --- */
-		$fullTextUrl = XMLCustomWriter::createChildWithText($doc, $root, 'fullTextUrl', Request::url(null, 'article', 'view', $article->getId()));
-		XMLCustomWriter::setAttribute($fullTextUrl, 'format', 'html');
 
-		/* --- Keywords --- */
-		$keywords = XMLCustomWriter::createElement($doc, 'keywords');
-		XMLCustomWriter::appendChild($root, $keywords);
 
-		$subjects = array_map('trim', explode(';', $article->getSubject($article->getLocale())));
 
-		foreach ($subjects as $keyword) {
-			XMLCustomWriter::createChildWithText($doc, $keywords, 'keyword', $keyword, false);
-		}
 
 		return $root;
 	}
@@ -249,18 +261,33 @@ class CopernicusExportDom {
 	 * @param $journal object Journal
 	 * @param $issue object Issue
 	 * @param $article object Article
+     * @param $key author's array key
 	 * @param $author object Author
 	 * @param $affilList array List of author affiliations
 	 */
-	function generateAuthorDom($doc, $journal, $issue, $article, $author, $affilList) {
+	function generateAuthorDom($doc, $journal, $issue, $article, $key, $author, $affilList) {
 		$root = XMLCustomWriter::createElement($doc, 'author');
 
-		XMLCustomWriter::createChildWithText($doc, $root, 'name', $author->getFullName());
+		XMLCustomWriter::createChildWithText($doc, $root, 'name', $author->getFirstName());
+        XMLCustomWriter::createChildWithText($doc, $root, 'name2', $author->getMiddleName());
+        XMLCustomWriter::createChildWithText($doc, $root, 'surname', $author->getLastName());
+        //Polish affiliation        
+        if ($author->getCountry()=='PL'||$author->getCountry()=='pl_PL'){
+            XMLCustomWriter::createChildWithText($doc, $root, 'polishAffiliation', '1');
+        } else {
+            XMLCustomWriter::createChildWithText($doc, $root, 'polishAffiliation', '0');
+        }
 		XMLCustomWriter::createChildWithText($doc, $root, 'email', $author->getEmail(), false);
-
-		if(in_array($author->getAffiliation($article->getLocale()), $affilList)  && !empty($affilList[0])) {
-			XMLCustomWriter::createChildWithText($doc, $root, 'affiliationId', current(array_keys($affilList, $author->getAffiliation($article->getLocale()))));
-		}
+        
+        XMLCustomWriter::createChildWithText($doc, $root, 'order', strval($key+1));
+        
+        XMLCustomWriter::createChildWithText($doc, $root, 'instituteAffiliation', $author->getAffiliation($article->getLocale()));
+        
+        XMLCustomWriter::createChildWithText($doc, $root, 'departmentAffiliation', $author->getBiography($article->getLocale()));
+        
+		//if(in_array($author->getAffiliation($article->getLocale()), $affilList)  && !empty($affilList[0])) {
+		//	XMLCustomWriter::createChildWithText($doc, $root, 'instituteAffiliation', current(array_keys($affilList, $author->getAffiliation($article->getLocale()))));
+		//}
 
 		return $root;
 	}
@@ -530,15 +557,15 @@ class CopernicusExportDom {
 	function mapArticleType($articleTypeId = 0) {
         switch ($articleTypeId) {
             case 0: return "ORIGINAL_ARTICLE"; break;
-            case 0: return "REVIEW_ARTICLE"; break;
-            case 0: return "SHORT_COMMUNICATION"; break;
-            case 0: return "COMMENTARY_ON_THE_LAW"; break;
-            case 0: return "SCIENTIFIC_REVIEW"; break;
-            case 0: return "GUIDELINES"; break;
-            case 0: return "POPULAR_SCIENCE_ARTICLE"; break;
-            case 0: return "OTHERS_NONCITABLE"; break;
-            case 0: return "OTHERS_CITABLE"; break;
-            case 0: return "CASE_STUDY"; break;
+            case 1: return "REVIEW_ARTICLE"; break;
+            case 2: return "SHORT_COMMUNICATION"; break;
+            case 3: return "COMMENTARY_ON_THE_LAW"; break;
+            case 4: return "SCIENTIFIC_REVIEW"; break;
+            case 5: return "GUIDELINES"; break;
+            case 6: return "POPULAR_SCIENCE_ARTICLE"; break;
+            case 7: return "OTHERS_NONCITABLE"; break;
+            case 8: return "OTHERS_CITABLE"; break;
+            case 9: return "CASE_STUDY"; break;
             default: return "ORIGINAL_ARTICLE";
         }
     }
