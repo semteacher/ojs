@@ -196,6 +196,14 @@ class CopernicusExportDom {
         $referenceOrder = XMLCustomWriter::createChildWithText($doc, $referenceNode, 'order', '1');
         XMLCustomWriter::appendChild($references, $referenceNode);
 		XMLCustomWriter::appendChild($root, $references);
+
+        /* --- Science classification (draft) --- */
+        //TODO: choice required PER EACH ARTICLE!!!
+		$disciplineSciencesNode = XMLCustomWriter::createElement($doc, 'disciplineSciences');
+        $areaScience = XMLCustomWriter::createChildWithText($doc, $disciplineSciencesNode, 'areaScience', '7');
+        $fieldScience = XMLCustomWriter::createChildWithText($doc, $disciplineSciencesNode, 'fieldScience', '15');
+        $disciplineScience = XMLCustomWriter::createChildWithText($doc, $disciplineSciencesNode, 'disciplineScience', '85');
+		XMLCustomWriter::appendChild($root, $disciplineSciencesNode); 
         
         //foreach ((array) $article->getTitle(null) as $locale => $title) {
 		//	if (empty($title)) continue;
