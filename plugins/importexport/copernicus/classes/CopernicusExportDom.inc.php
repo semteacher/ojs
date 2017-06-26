@@ -189,6 +189,14 @@ class CopernicusExportDom {
 			unset($authorNode);
 		}
         
+        /* --- references (draft) --- */
+		$references = XMLCustomWriter::createElement($doc, 'references');
+        $referenceNode = XMLCustomWriter::createElement($doc, 'reference');
+        $referenceContent = XMLCustomWriter::createChildWithText($doc, $referenceNode, 'unparsedContent', $article->getCitations());
+        $referenceOrder = XMLCustomWriter::createChildWithText($doc, $referenceNode, 'order', '1');
+        XMLCustomWriter::appendChild($references, $referenceNode);
+		XMLCustomWriter::appendChild($root, $references);
+        
         //foreach ((array) $article->getTitle(null) as $locale => $title) {
 		//	if (empty($title)) continue;
 
