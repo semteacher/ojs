@@ -199,6 +199,7 @@ class CopernicusExportDom {
 
         /* --- Science classification (draft) --- */
         //TODO: choice required PER EACH ARTICLE!!!
+        //TODO: or remove??? (possible)
 		$disciplineSciencesNode = XMLCustomWriter::createElement($doc, 'disciplineSciences');
         $areaScience = XMLCustomWriter::createChildWithText($doc, $disciplineSciencesNode, 'areaScience', '7');
         $fieldScience = XMLCustomWriter::createChildWithText($doc, $disciplineSciencesNode, 'fieldScience', '15');
@@ -286,6 +287,12 @@ class CopernicusExportDom {
         XMLCustomWriter::createChildWithText($doc, $root, 'instituteAffiliation', $author->getAffiliation($article->getLocale()));
         
         XMLCustomWriter::createChildWithText($doc, $root, 'departmentAffiliation', $author->getBiography($article->getLocale()));
+        
+        if ($key == 0) {
+            XMLCustomWriter::createChildWithText($doc, $root, 'role', 'Glowny Autor');
+        } else {
+            XMLCustomWriter::createChildWithText($doc, $root, 'role', 'Autor (w tym Wspolautor)');
+        }
         
 		//if(in_array($author->getAffiliation($article->getLocale()), $affilList)  && !empty($affilList[0])) {
 		//	XMLCustomWriter::createChildWithText($doc, $root, 'instituteAffiliation', current(array_keys($affilList, $author->getAffiliation($article->getLocale()))));
