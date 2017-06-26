@@ -124,9 +124,7 @@ class CopernicusExportDom {
         /* --- Article meta-data by language --- */
         $langVersionNodeData = XMLCustomWriter::createElement($doc, 'languageVersion');
         $locale = $article->getLocale();
-        //var_dump($article);
-        //var_dump(substr($locale, 3, 2));
-        //TODO: re-factor
+
         if (strlen($locale) == 5) {
             XMLCustomWriter::setAttribute($langVersionNodeData, 'language', substr($locale, 3, 2));
         } else {
@@ -179,6 +177,17 @@ class CopernicusExportDom {
 			XMLCustomWriter::createChildWithText($doc, $keywords, 'keyword', $keyword, false);
 		}
 
+		/* --- Authors and affiliations --- */
+		$authors = XMLCustomWriter::createElement($doc, 'authors');
+		XMLCustomWriter::appendChild($root, $authors);
+
+		$affilList = CopernicusExportDom::generateAffiliationsList($article->getAuthors(), $article);
+
+		foreach ($article->getAuthors() as $key=>$author) {
+			$authorNode = CopernicusExportDom::generateAuthorDom($doc, $journal, $issue, $article, $key, $author, $affilList);
+			XMLCustomWriter::appendChild($authors, $authorNode);
+			unset($authorNode);
+		}
         
         //foreach ((array) $article->getTitle(null) as $locale => $title) {
 		//	if (empty($title)) continue;
@@ -186,8 +195,7 @@ class CopernicusExportDom {
 		//	$titleNode = XMLCustomWriter::createChildWithText($doc, $root, 'title', $title);
 		//	if (strlen($locale) == 5) XMLCustomWriter::setAttribute($titleNode, 'language', CopernicusExportDom::mapLang(String::substr($locale, 0, 2)));
 		//}
-        
-        
+               
         //CopernicusExportDom::mapLang(String::substr($locale, 0, 2)
 		/* --- Article Language --- */
 		//XMLCustomWriter::createChildWithText($doc, $root, 'language', CopernicusExportDom::mapLang($article->getLanguage()), false);
@@ -202,32 +210,14 @@ class CopernicusExportDom {
 		//XMLCustomWriter::createChildWithText($doc, $root, 'issn', $journal->getSetting('printIssn'), false);
 		//XMLCustomWriter::createChildWithText($doc, $root, 'eissn', $journal->getSetting('onlineIssn'), false);
 
-
-
 		//XMLCustomWriter::createChildWithText($doc, $root, 'volume',  $issue->getVolume(), false);
 
 		//XMLCustomWriter::createChildWithText($doc, $root, 'issue',  $issue->getNumber(), false);
-
-
-
 
 		//XMLCustomWriter::createChildWithText($doc, $root, 'publisherRecordId',  $article->getPublishedArticleId(), false);
 //var_dump($article->getPublishedArticleId());
 		//XMLCustomWriter::createChildWithText($doc, $root, 'documentType',  $article->getType($article->getLocale()), false);
 //var_dump($article->getType($article->getLocale()));
-
-
-		/* --- Authors and affiliations --- */
-		$authors = XMLCustomWriter::createElement($doc, 'authors');
-		XMLCustomWriter::appendChild($root, $authors);
-
-		$affilList = CopernicusExportDom::generateAffiliationsList($article->getAuthors(), $article);
-
-		foreach ($article->getAuthors() as $key=>$author) {
-			$authorNode = CopernicusExportDom::generateAuthorDom($doc, $journal, $issue, $article, $key, $author, $affilList);
-			XMLCustomWriter::appendChild($authors, $authorNode);
-			unset($authorNode);
-		}
 
 		//if (!empty($affilList[0])) {
 		//	$affils = XMLCustomWriter::createElement($doc, 'affiliationsList');
@@ -247,10 +237,6 @@ class CopernicusExportDom {
 		//	$abstractNode = XMLCustomWriter::createChildWithText($doc, $root, 'abstract', String::html2text($abstract));
 		//	if (strlen($locale) == 5) XMLCustomWriter::setAttribute($abstractNode, 'language', CopernicusExportDom::mapLang(String::substr($locale, 0, 2)));
 		//}
-
-
-
-
 
 		return $root;
 	}
