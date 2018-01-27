@@ -1,5 +1,6 @@
 <?php
-
+//forece https in addition to config.inc params
+$_SERVER['HTTPS'] = 'on';
 /**
  * @mainpage OJS API Reference
  *
